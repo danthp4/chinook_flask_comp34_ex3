@@ -18,3 +18,8 @@ def signup():
     # Code to add the student to the database goes here
         return redirect(url_for('main.index'))
     return render_template('signup.html', form=form)
+
+@bp_main.route('/courses', methods=['GET'])
+def courses():
+   course_list = Course.query.all()
+   return render_template("courses.html", courses=course_list)
