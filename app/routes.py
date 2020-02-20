@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from app.forms import SignupForm
-
+from app import db
+from app.models import Artist
 bp_main = Blueprint('main', __name__)
 
 
@@ -14,12 +15,22 @@ def index():
 def signup():
     form = SignupForm(request.form)
     if request.method == 'POST' and form.validate():
-        flash('Signup requested for {}'.format(form.last_name.data))
-    # Code to add the student to the database goes here
-        return redirect(url_for('main.index'))
+        from app.models import User
+        user = User(user_id='1', username=form.first_name.data, email=form.email.data,)
+        user.set_password(form.password.data)
+        from sqlalchemy.exc import IntegrityError
+        try:
+            db.session.add(user)
+            db.session.commit()
+            flash('You are now a registered user!')
+            return redirect(url_for('main.index'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('ERROR! Unable to register {}. Please check your details are correct and try again.'.format(
+                form.name.data), 'error')
     return render_template('signup.html', form=form)
 
-@bp_main.route('/courses', methods=['GET'])
-def courses():
-   course_list = Course.query.all()
-   return render_template("courses.html", courses=course_list)
+@bp_main.route('/artists', methods=['GET'])
+def artists():
+   artist_list = Artist.query.all()
+   return render_template("artists.html", artists=artist_list)

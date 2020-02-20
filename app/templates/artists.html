@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Artist{% endblock %}
+{% block content %}
+{% if artist|length %}
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">Artist</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for Artist in artist %}
+    <tr>
+        <td>{{ artist.Name }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Sorry, no artists are available at this time</p>
+{% endif %}
+{% endblock %}
